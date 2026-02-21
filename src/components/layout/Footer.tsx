@@ -21,7 +21,7 @@ export function Footer() {
                         <a href="#" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
                             <Twitter size={18} />
                         </a>
-                        <a href="https://github.com/emreyoleridev" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+                        <a href="https://github.com/emreyoleri" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                             <Github size={18} />
                         </a>
                     </div>
@@ -42,10 +42,12 @@ export function Footer() {
 
             </div>
             <div className="container mx-auto px-4 mt-12 pt-8 border-t border-zinc-200 dark:border-white/5 text-center text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                Built by Emre Yoleri{" "}
-                <a href="https://github.com/emreyoleridev" target="_blank" rel="noopener noreferrer" className="text-red-600 dark:text-red-500 hover:underline">
-                    https://github.com/emreyoleridev
-                </a>
+                Built with ❤️ by **Emre Yoleri**
+                <div className="mt-2">
+                    <a href="https://github.com/emreyoleri" target="_blank" rel="noopener noreferrer" className="text-red-600 dark:text-red-500 hover:underline">
+                        GitHub
+                    </a>
+                </div>
             </div>
         </footer>
     );

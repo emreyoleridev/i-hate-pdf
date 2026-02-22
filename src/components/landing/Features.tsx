@@ -1,7 +1,7 @@
 "use client";
 
 import { Shield, Zap, Sparkles, Smile, CloudOff, Infinity } from "lucide-react";
-import { motion } from "framer-motion";
+
 
 const features = [
     {
@@ -63,12 +63,8 @@ export function Features() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map((feature, idx) => (
-                        <motion.div
+                        <div
                             key={idx}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: idx * 0.1 }}
                             className="p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 transition-all group"
                         >
                             <div className={`h-14 w-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 border border-zinc-200 dark:border-white/5 group-hover:scale-110 transition-transform`}>
@@ -78,7 +74,7 @@ export function Features() {
                             <p className="text-zinc-600 dark:text-zinc-500 leading-relaxed">
                                 {feature.description}
                             </p>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>

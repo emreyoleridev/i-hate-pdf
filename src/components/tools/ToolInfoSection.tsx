@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+
 import { CheckCircle2, ShieldCheck, Zap, Info } from "lucide-react";
 
 interface ToolInfoSectionProps {
@@ -61,10 +61,7 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
         <div className="w-full max-w-5xl mx-auto py-24 px-4 border-t border-zinc-200 dark:border-zinc-900 mt-20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
                 {/* How to use */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                <div
                     className="space-y-6"
                 >
                     <div className="flex items-center gap-3 text-red-500">
@@ -81,14 +78,10 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                             </li>
                         ))}
                     </ul>
-                </motion.div>
+                </div>
 
                 {/* Features */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 }}
+                <div
                     className="space-y-6"
                 >
                     <div className="flex items-center gap-3 text-green-500">
@@ -103,14 +96,10 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                             </li>
                         ))}
                     </ul>
-                </motion.div>
+                </div>
 
                 {/* Use Cases */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
+                <div
                     className="space-y-6"
                 >
                     <div className="flex items-center gap-3 text-blue-500">
@@ -125,14 +114,11 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                             </li>
                         ))}
                     </ul>
-                </motion.div>
+                </div>
             </div>
 
             {/* Bottom informational banner */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+            <div
                 className="mt-20 p-8 rounded-3xl border border-red-500/20 bg-red-500/5 text-center flex flex-col items-center"
             >
                 <ShieldCheck className="w-12 h-12 text-red-500 mb-4" />
@@ -140,7 +126,7 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                 <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
                     We value your privacy. Unlike other online tools, <span className="text-zinc-900 dark:text-white font-bold">I Hate PDF</span> doesn't upload your private documents to any server. All processing happens locally within your browser using your computer's resources.
                 </p>
-            </motion.div>
+            </div>
         </div>
     );
 }

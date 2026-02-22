@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+
 import { Upload, Cpu, Download } from "lucide-react";
 
 const steps = [
@@ -43,12 +43,8 @@ export function HowItWorks() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
                         {steps.map((step, idx) => (
-                            <motion.div
+                            <div
                                 key={idx}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: idx * 0.2 }}
                                 className="flex flex-col items-center text-center"
                             >
                                 <div className={`h-20 w-20 rounded-full ${step.color} flex items-center justify-center text-white mb-8 shadow-[0_0_30px_rgba(239,68,68,0.2)] ring-8 ring-zinc-50 dark:ring-zinc-900`}>
@@ -58,7 +54,7 @@ export function HowItWorks() {
                                 <p className="text-zinc-600 dark:text-zinc-500 max-w-xs leading-relaxed">
                                     {step.description}
                                 </p>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>

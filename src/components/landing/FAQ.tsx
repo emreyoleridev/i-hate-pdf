@@ -32,12 +32,12 @@ export function FAQ() {
 
     return (
         <section className="py-24 relative">
-            <div className="container mx-auto px-4 max-w-4xl">
+            <div className="w-full mx-auto px-4 max-w-4xl">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-black mb-6 text-white tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-black mb-6 text-zinc-900 dark:text-white tracking-tight">
                         Common Questions
                     </h2>
-                    <p className="text-zinc-400 text-lg">
+                    <p className="text-zinc-600 dark:text-zinc-400 text-lg">
                         Everything you need to know about the most secure PDF platform.
                     </p>
                 </div>
@@ -46,14 +46,14 @@ export function FAQ() {
                     {faqs.map((faq, idx) => (
                         <div
                             key={idx}
-                            className="rounded-2xl border border-zinc-800 bg-zinc-900/30 overflow-hidden transition-all"
+                            className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/30 overflow-hidden transition-all"
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                                className="w-full p-6 text-left flex items-center justify-between hover:bg-zinc-800/50 transition-colors"
+                                className="w-full p-6 text-left flex items-center justify-between hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-colors"
                             >
-                                <span className="text-lg font-bold text-white">{faq.question}</span>
-                                {openIndex === idx ? <ChevronUp className="text-red-500" /> : <ChevronDown className="text-zinc-500" />}
+                                <span className="text-lg font-bold text-zinc-900 dark:text-white">{faq.question}</span>
+                                {openIndex === idx ? <ChevronUp className="text-red-500" /> : <ChevronDown className="text-zinc-400 dark:text-zinc-500" />}
                             </button>
 
                             <AnimatePresence>
@@ -64,7 +64,7 @@ export function FAQ() {
                                         exit={{ height: 0, opacity: 0 }}
                                         transition={{ duration: 0.3 }}
                                     >
-                                        <div className="p-6 pt-0 text-zinc-400 leading-relaxed border-t border-zinc-800/50 mt-2">
+                                        <div className="p-6 pt-0 text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-200 dark:border-zinc-800/50 mt-2">
                                             {faq.answer}
                                         </div>
                                     </motion.div>

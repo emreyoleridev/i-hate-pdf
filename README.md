@@ -4,8 +4,6 @@
 
 I Hate PDF is a premium, high-performance web application designed to solve everything you hate about managing PDF documents. Unlike traditional PDF tools, we respect your privacy: **your files never touch any server.** Every single operation is performed locally within your browser using your device's raw power.
 
-![I Hate PDF Preview](/public/og-image.png) *(Note: Ensure you have an OG image or replace this path)*
-
 ## 🚀 Why I Hate PDF?
 
 -   **Zero Uploads:** Your sensitive data stays on your machine.

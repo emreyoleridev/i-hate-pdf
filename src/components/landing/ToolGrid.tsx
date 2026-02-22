@@ -3,7 +3,7 @@ import { toolsData } from "@/config/tools";
 
 export function ToolGrid() {
     return (
-        <section className="py-20 px-4 container mx-auto">
+        <section className="py-20 px-4 w-full max-w-[1400px] mx-auto">
             <div className="flex flex-col gap-24">
                 {toolsData.map((group, groupIdx) => (
                     <div key={groupIdx} className="flex flex-col gap-6">

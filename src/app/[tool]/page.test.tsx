@@ -31,7 +31,9 @@ describe("Individual PDF Tool Pages", () => {
                     "organize-pdf", "page-numbers", "watermark",
                     "protect-pdf", "unlock-pdf", "redact-pdf",
                     "compress-pdf", "repair-pdf", "crop-pdf",
-                    "pdf-to-word", "pdf-to-jpg", "scan-to-pdf"
+                    "pdf-to-word", "pdf-to-jpg", "scan-to-pdf",
+                    "compare-pdf", "excel-to-pdf", "html-to-pdf",
+                    "ppt-to-pdf", "word-to-pdf"
                 ];
                 if (!implementedTools.includes(tool.id)) {
                     expect(screen.getByRole("button", { name: tool.actionLabel })).toBeInTheDocument();

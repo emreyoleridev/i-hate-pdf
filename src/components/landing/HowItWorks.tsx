@@ -26,20 +26,20 @@ const steps = [
 
 export function HowItWorks() {
     return (
-        <section className="py-24 bg-zinc-950/50 relative">
-            <div className="container mx-auto px-4">
+        <section className="py-24 bg-zinc-50/50 dark:bg-zinc-950/50 relative">
+            <div className="w-full max-w-[1400px] mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-3xl md:text-5xl font-black mb-6 text-white tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-black mb-6 text-zinc-900 dark:text-white tracking-tight">
                         Three simple steps to <span className="text-red-500 text-glow">freedom</span>
                     </h2>
-                    <p className="text-zinc-400 text-lg">
+                    <p className="text-zinc-600 dark:text-zinc-400 text-lg">
                         Processing PDFs shouldn't be a chore. We've simplified the workflow to its core.
                     </p>
                 </div>
 
                 <div className="relative">
                     {/* Connection Line */}
-                    <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-zinc-800 -translate-y-1/2 z-0" />
+                    <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-zinc-200 dark:bg-zinc-800 -translate-y-1/2 z-0" />
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
                         {steps.map((step, idx) => (
@@ -51,11 +51,11 @@ export function HowItWorks() {
                                 transition={{ duration: 0.5, delay: idx * 0.2 }}
                                 className="flex flex-col items-center text-center"
                             >
-                                <div className={`h-20 w-20 rounded-full ${step.color} flex items-center justify-center text-white mb-8 shadow-[0_0_30px_rgba(239,68,68,0.2)] ring-8 ring-zinc-900`}>
+                                <div className={`h-20 w-20 rounded-full ${step.color} flex items-center justify-center text-white mb-8 shadow-[0_0_30px_rgba(239,68,68,0.2)] ring-8 ring-zinc-50 dark:ring-zinc-900`}>
                                     <step.icon className="h-10 w-10" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-white mb-4">{step.title}</h3>
-                                <p className="text-zinc-500 max-w-xs leading-relaxed">
+                                <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{step.title}</h3>
+                                <p className="text-zinc-600 dark:text-zinc-500 max-w-xs leading-relaxed">
                                     {step.description}
                                 </p>
                             </motion.div>

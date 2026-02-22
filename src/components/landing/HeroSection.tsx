@@ -8,7 +8,7 @@ export function HeroSection() {
             {/* Background accents */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-red-900/10 dark:bg-red-900/20 blur-[120px] rounded-full pointer-events-none opacity-50" />
 
-            <div className="container mx-auto px-4 relative z-10">
+            <div className="w-full max-w-[1400px] mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -20,7 +20,7 @@ export function HeroSection() {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                         </span>
-                        100% Free & Secure. All processing happens on your device.
+                        100% Client-Side. Private & Secure.
                     </motion.div>
 
                     <motion.h1

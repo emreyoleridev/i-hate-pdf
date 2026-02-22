@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/layout/Header";
 import { Footer } from "../components/layout/Footer";
+import { ThemeProvider } from "../components/theme-provider";
+import { ThemeToggle } from "../components/theme-toggle";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,13 +19,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white antialiased min-h-screen flex flex-col transition-colors duration-300`}>
-        <Header />
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
-        <Footer />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <Header />
+          <main className="flex-1 flex flex-col">
+            {children}
+          </main>
+          <Footer />
+          <ThemeToggle />
+        </ThemeProvider>
       </body>
     </html>
   );

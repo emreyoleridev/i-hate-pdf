@@ -119,7 +119,7 @@ export function ScanToPdf() {
             }
 
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes.buffer], { type: "application/pdf" });
+            const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
 
             setResultUrl(url);
@@ -150,7 +150,7 @@ export function ScanToPdf() {
             <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
 
             <div className="relative z-10 w-full text-center flex flex-col items-center max-w-4xl mx-auto">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-zinc-300 shadow-xl mb-8">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300 shadow-xl mb-8">
                     <Icon className="h-8 w-8 text-red-500" strokeWidth={2} />
                 </div>
 
@@ -158,7 +158,7 @@ export function ScanToPdf() {
                     {toolData.title}
                 </h1>
 
-                <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto mb-12">
+                <p className="text-xl text-zinc-600 dark:text-zinc-400 font-medium max-w-2xl mx-auto mb-12">
                     {toolData.description}
                 </p>
 
@@ -171,10 +171,10 @@ export function ScanToPdf() {
                 {status === "idle" && (
                     <div className="w-full max-w-2xl flex flex-col gap-8">
                         {images.length > 0 && (
-                            <div className="bg-zinc-800/50 border border-zinc-700 rounded-3xl p-6 mb-4">
+                            <div className="bg-white/50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-3xl p-6 mb-4">
                                 <div className="flex items-center justify-between mb-4 px-2">
-                                    <h3 className="text-white font-bold text-lg">Captured Scans ({images.length})</h3>
-                                    <button onClick={() => setImages([])} className="text-zinc-500 hover:text-red-400 text-sm font-medium transition-colors">Clear All</button>
+                                    <h3 className="text-zinc-900 dark:text-white font-bold text-lg">Captured Scans ({images.length})</h3>
+                                    <button onClick={() => setImages([])} className="text-zinc-500 dark:text-zinc-500 hover:text-red-400 text-sm font-medium transition-colors">Clear All</button>
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-h-[240px] overflow-y-auto px-2 custom-scrollbar">
                                     {images.map((img, idx) => (
@@ -205,13 +205,13 @@ export function ScanToPdf() {
                                 </div>
                                 <div>
                                     <p className="text-xl font-bold text-white mb-1">Use Camera</p>
-                                    <p className="text-zinc-500 text-sm">Snap photos of documents</p>
+                                    <p className="text-zinc-500 dark:text-zinc-500 text-sm">Snap photos of documents</p>
                                 </div>
                             </button>
 
                             <div
                                 {...getRootProps()}
-                                className={`flex flex-col items-center justify-center gap-4 p-10 rounded-3xl border-2 border-dashed transition-all cursor-pointer group ${isDragActive ? "border-red-500 bg-red-500/5" : "border-zinc-700 bg-zinc-900/50 hover:border-zinc-500 hover:bg-zinc-800/50"
+                                className={`flex flex-col items-center justify-center gap-4 p-10 rounded-3xl border-2 border-dashed transition-all cursor-pointer group ${isDragActive ? "border-red-500 bg-red-500/5" : "border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/50 hover:border-zinc-500 hover:bg-white/50 dark:bg-zinc-800/50"
                                     }`}
                             >
                                 <input {...getInputProps()} />
@@ -220,7 +220,7 @@ export function ScanToPdf() {
                                 </div>
                                 <div className="text-center">
                                     <p className="text-xl font-bold text-white mb-1">Upload Images</p>
-                                    <p className="text-zinc-500 text-sm">Convert photos to PDF</p>
+                                    <p className="text-zinc-500 dark:text-zinc-500 text-sm">Convert photos to PDF</p>
                                 </div>
                             </div>
                         </div>
@@ -237,7 +237,7 @@ export function ScanToPdf() {
                 )}
 
                 {status === "capturing" && (
-                    <div className="w-full max-w-2xl p-6 rounded-3xl border border-zinc-700 bg-zinc-950 shadow-2xl overflow-hidden relative">
+                    <div className="w-full max-w-2xl p-6 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-zinc-950 shadow-2xl overflow-hidden relative">
                         <div className="aspect-[3/4] bg-zinc-900 rounded-2xl overflow-hidden relative mb-6">
                             <video
                                 ref={videoRef}
@@ -288,7 +288,7 @@ export function ScanToPdf() {
                         {images.length > 0 && (
                             <button
                                 onClick={() => setStatus("idle")}
-                                className="w-full mt-4 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-colors border border-zinc-700"
+                                className="w-full mt-4 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white font-bold rounded-xl transition-colors border border-zinc-200 dark:border-zinc-700"
                             >
                                 Done Capturing
                             </button>
@@ -297,31 +297,31 @@ export function ScanToPdf() {
                 )}
 
                 {status === "processing" && (
-                    <div className="w-full max-w-2xl p-12 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-6 shadow-2xl">
+                    <div className="w-full max-w-2xl p-12 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-6 shadow-2xl">
                         <Loader2 className="w-16 h-16 text-red-500 animate-spin" />
-                        <h3 className="text-3xl font-bold text-white mt-4">Generating PDF...</h3>
-                        <p className="text-zinc-400 text-lg">Bundling images into a legal-standard document.</p>
+                        <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mt-4">Generating PDF...</h3>
+                        <p className="text-zinc-600 dark:text-zinc-400 text-lg">Bundling images into a legal-standard document.</p>
                     </div>
                 )}
 
                 {status === "done" && resultUrl && (
-                    <div className="w-full max-w-2xl mt-8 p-12 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-8 shadow-2xl">
+                    <div className="w-full max-w-2xl mt-8 p-12 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-8 shadow-2xl">
                         <div className="h-24 w-24 rounded-full bg-green-500/10 flex items-center justify-center mb-2 ring-4 ring-green-500/20">
                             <CheckCircle2 className="w-12 h-12 text-green-500" />
                         </div>
                         <div className="text-center">
-                            <h3 className="text-3xl font-bold text-white mb-3">PDF Scanned!</h3>
-                            <p className="text-zinc-400 text-lg">Your images have been successfully converted into a PDF.</p>
+                            <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mb-3">PDF Scanned!</h3>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-lg">Your images have been successfully converted into a PDF.</p>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4">
-                            <button onClick={handleReset} className="px-6 py-4 rounded-xl border border-zinc-600 text-zinc-300 font-medium hover:bg-zinc-700/50 hover:text-white transition-all">
+                            <button onClick={handleReset} className="px-6 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-all">
                                 Scan Another
                             </button>
                             <a
                                 href={resultUrl}
                                 download="scanned_document.pdf"
-                                className="px-8 py-4 rounded-xl bg-green-600 text-white font-bold hover:bg-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center justify-center gap-3"
+                                className="px-8 py-4 rounded-xl bg-green-600 text-zinc-900 dark:text-white font-bold hover:bg-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center justify-center gap-3"
                             >
                                 <Download className="w-6 h-6" />
                                 Download Scanned PDF

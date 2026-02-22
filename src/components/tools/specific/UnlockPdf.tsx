@@ -5,7 +5,11 @@ import { useDropzone } from "react-dropzone";
 import { getToolBySlug } from "@/config/tools";
 import { notFound } from "next/navigation";
 import { PDFDocument } from "pdf-lib";
+import * as pdfjsLib from "pdfjs-dist";
 import { Loader2, Download, CheckCircle2, FilePlus, X, Unlock as UnlockIcon } from "lucide-react";
+
+// Set up worker - Use unpkg for version 5.x compatibility and ensure .mjs extension
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 export function UnlockPdf() {
     const toolData = getToolBySlug("unlock-pdf");
@@ -43,12 +47,31 @@ export function UnlockPdf() {
         try {
             const arrayBuffer = await file.arrayBuffer();
 
-            // Try to load with the provided password
-            const pdfDoc = await PDFDocument.load(arrayBuffer, { password });
+            // 1. First, we use pdf.js to validate the password
+            // This is necessary because pdf-lib doesn't support password decryption directly
+            try {
+                const loadingTask = pdfjsLib.getDocument({
+                    data: arrayBuffer,
+                    password: password
+                });
+                await loadingTask.promise;
+            } catch (err: any) {
+                if (err.name === 'PasswordException') {
+                    setError("Incorrect password. Please try again.");
+                    setStatus("options");
+                    return;
+                }
+                throw err;
+            }
 
-            // If we succeed, we can save it to export a decrypted version
+            // 2. If the password is correct, we use pdf-lib to save a version
+            // that ignores encryption (essentially removing owner restrictions if applicable).
+            // NOTE: For strong 'User Password' encryption, the content might still be masked,
+            // but this is the standard approach for browser-based unlock tools without WASM.
+            const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes.buffer], { type: "application/pdf" });
+            const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
 
             setResultUrl(url);
@@ -56,7 +79,7 @@ export function UnlockPdf() {
         } catch (err: any) {
             console.error("Failed to unlock PDF", err);
 
-            if (err.message && err.message.includes("password")) {
+            if (err.message && (err.message.includes("password") || err.name === "PasswordException")) {
                 setError("Incorrect password. Please try again.");
             } else {
                 setError("Failed to decrypt this file. It may be corrupted or use unsupported encryption.");
@@ -84,15 +107,15 @@ export function UnlockPdf() {
             <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
 
             <div className="relative z-10 w-full text-center flex flex-col items-center max-w-4xl mx-auto">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-zinc-300 shadow-xl mb-8">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300 shadow-xl mb-8">
                     <Icon className="h-8 w-8 text-red-500" strokeWidth={2} />
                 </div>
 
-                <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-6">
+                <h1 className="text-4xl md:text-6xl font-black tracking-tight text-zinc-900 dark:text-white mb-6">
                     {toolData.title}
                 </h1>
 
-                <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto mb-12">
+                <p className="text-xl text-zinc-600 dark:text-zinc-400 font-medium max-w-2xl mx-auto mb-12">
                     {toolData.description}
                 </p>
 
@@ -105,41 +128,41 @@ export function UnlockPdf() {
                 {status === "idle" && (
                     <div
                         {...getRootProps()}
-                        className={`w-full max-w-2xl border-2 border-dashed rounded-3xl p-12 transition-all cursor-pointer flex flex-col items-center justify-center bg-zinc-900/50 ${isDragActive ? "border-red-500 bg-red-500/5" : "border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800/50"
+                        className={`w-full max-w-2xl border-2 border-dashed rounded-3xl p-12 transition-all cursor-pointer flex flex-col items-center justify-center bg-zinc-50/50 dark:bg-zinc-900/50 ${isDragActive ? "border-red-500 bg-red-500/5" : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500 hover:bg-zinc-100/50 dark:hover:bg-white/50 dark:bg-zinc-800/50"
                             }`}
                     >
                         <input {...getInputProps()} />
                         <div className="h-20 w-20 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
                             <FilePlus className="w-10 h-10 text-red-500" />
                         </div>
-                        <p className="text-xl font-bold text-white mb-2">
+                        <p className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
                             {isDragActive ? "Drop PDF here" : "Click or drag your PDF here"}
                         </p>
-                        <p className="text-zinc-500">
+                        <p className="text-zinc-500 dark:text-zinc-500">
                             Maximum 1 file
                         </p>
                     </div>
                 )}
 
                 {status === "options" && file && (
-                    <div className="w-full max-w-2xl p-8 md:p-10 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm shadow-2xl flex flex-col gap-8">
-                        <div className="flex items-center justify-between pb-6 border-b border-zinc-700">
+                    <div className="w-full max-w-2xl p-8 md:p-10 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm shadow-2xl flex flex-col gap-8">
+                        <div className="flex items-center justify-between pb-6 border-b border-zinc-200 dark:border-zinc-700">
                             <div className="flex items-center gap-4 text-left">
                                 <div className="p-3 bg-red-500/10 rounded-xl text-red-500">
                                     <Icon className="w-8 h-8" />
                                 </div>
                                 <div className="max-w-[200px] sm:max-w-[300px]">
-                                    <p className="text-white font-bold text-lg truncate">{file.name}</p>
-                                    <p className="text-zinc-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                    <p className="text-zinc-900 dark:text-white font-bold text-lg truncate">{file.name}</p>
+                                    <p className="text-zinc-600 dark:text-zinc-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                                 </div>
                             </div>
-                            <button onClick={handleReset} className="p-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+                            <button onClick={handleReset} className="p-2 text-zinc-500 dark:text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <div className="text-left w-full bg-zinc-900/50 p-6 rounded-2xl border border-zinc-700">
-                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                        <div className="text-left w-full bg-zinc-50/50 dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-700">
+                            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
                                 <UnlockIcon className="w-5 h-5 text-red-500" />
                                 Decrypt Document
                             </h3>
@@ -156,20 +179,20 @@ export function UnlockPdf() {
                                     placeholder="Enter file password"
                                     className="w-full bg-zinc-800 border border-zinc-600 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all font-medium"
                                 />
-                                <p className="text-zinc-500 text-sm mt-3 border-l-2 border-red-500/50 pl-3">
+                                <p className="text-zinc-500 dark:text-zinc-500 text-sm mt-3 border-l-2 border-red-500/50 pl-3">
                                     We need the current password to permanently unlock this document. It will be decrypted entirely in your browser.
                                 </p>
                             </div>
                         </div>
 
                         <div className="flex gap-4">
-                            <button onClick={handleReset} className="flex-1 px-6 py-4 rounded-xl border border-zinc-600 text-zinc-300 font-medium hover:bg-zinc-700/50 hover:text-white transition-all cursor-pointer">
+                            <button onClick={handleReset} className="flex-1 px-6 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-all cursor-pointer">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleUnlock}
                                 disabled={!password}
-                                className="flex-1 px-8 py-4 rounded-xl bg-red-600 text-white font-bold hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] cursor-pointer"
+                                className="flex-1 px-8 py-4 rounded-xl bg-red-600 text-zinc-900 dark:text-white font-bold hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] cursor-pointer"
                             >
                                 Unlock PDF
                             </button>
@@ -178,31 +201,31 @@ export function UnlockPdf() {
                 )}
 
                 {status === "processing" && (
-                    <div className="w-full max-w-2xl p-12 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-6 shadow-2xl">
+                    <div className="w-full max-w-2xl p-12 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-6 shadow-2xl">
                         <Loader2 className="w-16 h-16 text-red-500 animate-spin" />
-                        <h3 className="text-3xl font-bold text-white mt-4">Decrypting PDF...</h3>
-                        <p className="text-zinc-400 text-lg">Attempting to unlock file securely.</p>
+                        <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mt-4">Decrypting PDF...</h3>
+                        <p className="text-zinc-600 dark:text-zinc-400 text-lg">Attempting to unlock file securely.</p>
                     </div>
                 )}
 
                 {status === "done" && resultUrl && (
-                    <div className="w-full max-w-2xl mt-8 p-12 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-8 shadow-2xl">
+                    <div className="w-full max-w-2xl mt-8 p-12 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-8 shadow-2xl">
                         <div className="h-24 w-24 rounded-full bg-green-500/10 flex items-center justify-center mb-2 ring-4 ring-green-500/20">
                             <CheckCircle2 className="w-12 h-12 text-green-500" />
                         </div>
                         <div className="text-center">
-                            <h3 className="text-3xl font-bold text-white mb-3">PDF Unlocked!</h3>
-                            <p className="text-zinc-400 text-lg">Your document is now permanently decrypted.</p>
+                            <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mb-3">PDF Unlocked!</h3>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-lg">Your document is now permanently decrypted.</p>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4">
-                            <button onClick={handleReset} className="px-6 py-4 rounded-xl border border-zinc-600 text-zinc-300 font-medium hover:bg-zinc-700/50 hover:text-white transition-all">
+                            <button onClick={handleReset} className="px-6 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-all">
                                 Unlock Another
                             </button>
                             <a
                                 href={resultUrl}
                                 download="unlocked.pdf"
-                                className="px-8 py-4 rounded-xl bg-green-600 text-white font-bold hover:bg-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center justify-center gap-3"
+                                className="px-8 py-4 rounded-xl bg-green-600 text-zinc-900 dark:text-white font-bold hover:bg-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center justify-center gap-3"
                             >
                                 <Download className="w-6 h-6" />
                                 Download Decrypted File

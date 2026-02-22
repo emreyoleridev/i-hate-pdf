@@ -58,7 +58,7 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
     const content = toolContent[toolId] || toolContent["default"];
 
     return (
-        <div className="w-full max-w-5xl mx-auto py-24 px-4 border-t border-zinc-900 mt-20">
+        <div className="w-full max-w-5xl mx-auto py-24 px-4 border-t border-zinc-200 dark:border-zinc-900 mt-20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
                 {/* How to use */}
                 <motion.div
@@ -69,15 +69,15 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                 >
                     <div className="flex items-center gap-3 text-red-500">
                         <Info className="w-6 h-6" />
-                        <h3 className="text-xl font-bold text-white uppercase tracking-wider">How to {title}</h3>
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white uppercase tracking-wider">How to {title}</h3>
                     </div>
                     <ul className="space-y-4">
                         {content.howTo.map((step, i) => (
                             <li key={i} className="flex gap-4">
-                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-xs font-bold border border-zinc-700">
+                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 flex items-center justify-center text-xs font-bold border border-zinc-300 dark:border-zinc-700">
                                     {i + 1}
                                 </span>
-                                <span className="text-zinc-400 text-sm leading-relaxed">{step}</span>
+                                <span className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">{step}</span>
                             </li>
                         ))}
                     </ul>
@@ -93,13 +93,13 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                 >
                     <div className="flex items-center gap-3 text-green-500">
                         <ShieldCheck className="w-6 h-6" />
-                        <h3 className="text-xl font-bold text-white uppercase tracking-wider">Pro Features</h3>
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Pro Features</h3>
                     </div>
                     <ul className="space-y-4">
                         {content.features.map((feature, i) => (
                             <li key={i} className="flex items-start gap-3">
                                 <CheckCircle2 className="w-5 h-5 text-green-500/50 mt-0.5" />
-                                <span className="text-zinc-400 text-sm leading-relaxed">{feature}</span>
+                                <span className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">{feature}</span>
                             </li>
                         ))}
                     </ul>
@@ -115,13 +115,13 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                 >
                     <div className="flex items-center gap-3 text-blue-500">
                         <Zap className="w-6 h-6" />
-                        <h3 className="text-xl font-bold text-white uppercase tracking-wider">Common Uses</h3>
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Common Uses</h3>
                     </div>
                     <ul className="space-y-4">
                         {content.useCases.map((useCase, i) => (
                             <li key={i} className="flex items-start gap-3">
                                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50 mt-2 flex-shrink-0" />
-                                <span className="text-zinc-400 text-sm leading-relaxed">{useCase}</span>
+                                <span className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">{useCase}</span>
                             </li>
                         ))}
                     </ul>
@@ -136,9 +136,9 @@ export function ToolInfoSection({ toolId, title }: ToolInfoSectionProps) {
                 className="mt-20 p-8 rounded-3xl border border-red-500/20 bg-red-500/5 text-center flex flex-col items-center"
             >
                 <ShieldCheck className="w-12 h-12 text-red-500 mb-4" />
-                <h4 className="text-2xl font-bold text-white mb-2">100% Secure & Client-Side</h4>
-                <p className="text-zinc-400 max-w-2xl mx-auto">
-                    We value your privacy. Unlike other online tools, <span className="text-white font-bold">I Hate PDF</span> doesn't upload your private documents to any server. All processing happens locally within your browser using your computer's resources.
+                <h4 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">100% Secure & Client-Side</h4>
+                <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+                    We value your privacy. Unlike other online tools, <span className="text-zinc-900 dark:text-white font-bold">I Hate PDF</span> doesn't upload your private documents to any server. All processing happens locally within your browser using your computer's resources.
                 </p>
             </motion.div>
         </div>

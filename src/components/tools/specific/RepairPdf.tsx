@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { getToolBySlug } from "@/config/tools";
 import { notFound } from "next/navigation";
 import { Loader2, Download, CheckCircle2, FilePlus, X, Wrench } from "lucide-react";
+import { PDFDocument } from "pdf-lib";
 
 export function RepairPdf() {
     const toolData = getToolBySlug("repair-pdf");
@@ -37,18 +38,21 @@ export function RepairPdf() {
         setError(null);
 
         try {
-            // Complex PDF structure repair is mocked for client-side purely 
-            // since native JS parsing of corrupted binary streams is very limited.
+            const arrayBuffer = await file.arrayBuffer();
+            // Loading the PDF with pdf-lib will often automatically fix minor structural issues
+            const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
-            setTimeout(() => {
-                const url = URL.createObjectURL(file);
-                setResultUrl(url);
-                setStatus("done");
-            }, 2500);
+            // Re-saving the document regenerates the cross-reference table and other metadata
+            const pdfBytes = await pdfDoc.save();
+
+            const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            setResultUrl(url);
+            setStatus("done");
 
         } catch (err) {
             console.error("Failed to repair PDF", err);
-            setError("Could not repair this PDF. The corruption may be too severe.");
+            setError("Could not repair this PDF. The corruption may be too severe for browser-side recovery.");
             setStatus("options");
         }
     };
@@ -71,15 +75,15 @@ export function RepairPdf() {
             <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
 
             <div className="relative z-10 w-full text-center flex flex-col items-center max-w-4xl mx-auto">
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-zinc-300 shadow-xl mb-8">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300 shadow-xl mb-8">
                     <Icon className="h-8 w-8 text-red-500" strokeWidth={2} />
                 </div>
 
-                <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-6">
+                <h1 className="text-4xl md:text-6xl font-black tracking-tight text-zinc-900 dark:text-white mb-6">
                     {toolData.title}
                 </h1>
 
-                <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto mb-12">
+                <p className="text-xl text-zinc-600 dark:text-zinc-400 font-medium max-w-2xl mx-auto mb-12">
                     {toolData.description}
                 </p>
 
@@ -92,35 +96,35 @@ export function RepairPdf() {
                 {status === "idle" && (
                     <div
                         {...getRootProps()}
-                        className={`w-full max-w-2xl border-2 border-dashed rounded-3xl p-12 transition-all cursor-pointer flex flex-col items-center justify-center bg-zinc-900/50 ${isDragActive ? "border-red-500 bg-red-500/5" : "border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800/50"
+                        className={`w-full max-w-2xl border-2 border-dashed rounded-3xl p-12 transition-all cursor-pointer flex flex-col items-center justify-center bg-zinc-50/50 dark:bg-zinc-900/50 ${isDragActive ? "border-red-500 bg-red-500/5" : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500 hover:bg-zinc-100/50 dark:hover:bg-white/50 dark:bg-zinc-800/50"
                             }`}
                     >
                         <input {...getInputProps()} />
                         <div className="h-20 w-20 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
                             <FilePlus className="w-10 h-10 text-red-500" />
                         </div>
-                        <p className="text-xl font-bold text-white mb-2">
+                        <p className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
                             {isDragActive ? "Drop PDF here" : "Click or drag your PDF here"}
                         </p>
-                        <p className="text-zinc-500">
+                        <p className="text-zinc-500 dark:text-zinc-500">
                             Upload a broken or corrupted PDF
                         </p>
                     </div>
                 )}
 
                 {status === "options" && file && (
-                    <div className="w-full max-w-2xl p-8 md:p-10 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm shadow-2xl flex flex-col gap-8">
-                        <div className="flex items-center justify-between pb-6 border-b border-zinc-700">
+                    <div className="w-full max-w-2xl p-8 md:p-10 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm shadow-2xl flex flex-col gap-8">
+                        <div className="flex items-center justify-between pb-6 border-b border-zinc-200 dark:border-zinc-700">
                             <div className="flex items-center gap-4 text-left">
                                 <div className="p-3 bg-red-500/10 rounded-xl text-red-500">
                                     <Icon className="w-8 h-8" />
                                 </div>
                                 <div className="max-w-[200px] sm:max-w-[300px]">
-                                    <p className="text-white font-bold text-lg truncate">{file.name}</p>
-                                    <p className="text-zinc-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                    <p className="text-zinc-900 dark:text-white font-bold text-lg truncate">{file.name}</p>
+                                    <p className="text-zinc-600 dark:text-zinc-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                                 </div>
                             </div>
-                            <button onClick={handleReset} className="p-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+                            <button onClick={handleReset} className="p-2 text-zinc-500 dark:text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
@@ -139,12 +143,12 @@ export function RepairPdf() {
                         </div>
 
                         <div className="flex gap-4 mt-2">
-                            <button onClick={handleReset} className="flex-1 px-6 py-4 rounded-xl border border-zinc-600 text-zinc-300 font-medium hover:bg-zinc-700/50 hover:text-white transition-all cursor-pointer">
+                            <button onClick={handleReset} className="flex-1 px-6 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-all cursor-pointer">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleRepair}
-                                className="flex-1 px-8 py-4 rounded-xl bg-red-600 text-white font-bold hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] cursor-pointer"
+                                className="flex-1 px-8 py-4 rounded-xl bg-red-600 text-zinc-900 dark:text-white font-bold hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] cursor-pointer"
                             >
                                 Rebuild Document
                             </button>
@@ -153,31 +157,31 @@ export function RepairPdf() {
                 )}
 
                 {status === "processing" && (
-                    <div className="w-full max-w-2xl p-12 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-6 shadow-2xl">
+                    <div className="w-full max-w-2xl p-12 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-6 shadow-2xl">
                         <Loader2 className="w-16 h-16 text-red-500 animate-spin" />
-                        <h3 className="text-3xl font-bold text-white mt-4">Analyzing File...</h3>
-                        <p className="text-zinc-400 text-lg">Reconstructing xref tables and repairing headers.</p>
+                        <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mt-4">Analyzing File...</h3>
+                        <p className="text-zinc-600 dark:text-zinc-400 text-lg">Reconstructing xref tables and repairing headers.</p>
                     </div>
                 )}
 
                 {status === "done" && resultUrl && (
-                    <div className="w-full max-w-2xl mt-8 p-12 rounded-3xl border border-zinc-700 bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-8 shadow-2xl">
+                    <div className="w-full max-w-2xl mt-8 p-12 rounded-3xl border border-zinc-200 dark:border-zinc-700 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm flex flex-col items-center gap-8 shadow-2xl">
                         <div className="h-24 w-24 rounded-full bg-green-500/10 flex items-center justify-center mb-2 ring-4 ring-green-500/20">
                             <CheckCircle2 className="w-12 h-12 text-green-500" />
                         </div>
                         <div className="text-center">
-                            <h3 className="text-3xl font-bold text-white mb-3">PDF Repaired!</h3>
-                            <p className="text-zinc-400 text-lg">We successfully rebuilt the corrupted elements.</p>
+                            <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mb-3">PDF Repaired!</h3>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-lg">We successfully rebuilt the corrupted elements.</p>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4">
-                            <button onClick={handleReset} className="px-6 py-4 rounded-xl border border-zinc-600 text-zinc-300 font-medium hover:bg-zinc-700/50 hover:text-white transition-all">
+                            <button onClick={handleReset} className="px-6 py-4 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-all">
                                 Repair Another
                             </button>
                             <a
                                 href={resultUrl}
                                 download={`repaired_${file?.name || "document.pdf"}`}
-                                className="px-8 py-4 rounded-xl bg-green-600 text-white font-bold hover:bg-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center justify-center gap-3"
+                                className="px-8 py-4 rounded-xl bg-green-600 text-zinc-900 dark:text-white font-bold hover:bg-green-500 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:shadow-[0_0_30px_rgba(34,197,94,0.5)] flex items-center justify-center gap-3"
                             >
                                 <Download className="w-6 h-6" />
                                 Download Repaired File

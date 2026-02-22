@@ -26,7 +26,7 @@ export default function Home() {
       {/* Trust section / Bottom CTA */}
       <section className="py-24 relative overflow-hidden bg-zinc-950 border-t border-zinc-900">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/10 blur-[100px] rounded-full pointer-events-none" />
-        <div className="container mx-auto px-4 text-center relative z-10">
+        <div className="w-full max-w-[1400px] mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-black mb-6 text-white tracking-tight">
             Stop struggling. Start working.
           </h2>
